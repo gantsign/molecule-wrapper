@@ -14,7 +14,7 @@ Note: this script currently only works on Linux.
 In the root of your Ansible role run the following to install the wrapper:
 
 ```bash
-wget 'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' \
+wget 'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' -O moleculew \
     && chmod 'u+x' moleculew
 ```
 
