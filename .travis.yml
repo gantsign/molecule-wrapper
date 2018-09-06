@@ -6,6 +6,7 @@ addons:
 
 script:
   - shellcheck moleculew
+  - shellcheck next-version.sh
 
 branches:
   only:
