@@ -36,7 +36,7 @@ NEXT_VERSION="${RELEASE_VERSION%.*}.$NEXT_PATCH_VERSION-dev"
 
 set -x
 
-git checkout -b "release-$RELEASE_VERSION"
+git checkout -b "$RELEASE_VERSION-release"
 
 sed --in-place \
     "s/^WRAPPER_VERSION=.*/WRAPPER_VERSION=$RELEASE_VERSION/" moleculew
@@ -47,11 +47,11 @@ git commit --message="\
 Prepare release $RELEASE_VERSION
 "
 
-hub pull-request --push --base master --message="\
+hub pull-request --push --base=master --message="\
 Release $RELEASE_VERSION
 "
 
-git checkout -b "dev-$NEXT_VERSION"
+git checkout -b "$NEXT_VERSION"
 
 sed --in-place \
     "s/^WRAPPER_VERSION=.*/WRAPPER_VERSION=$NEXT_VERSION/" moleculew
@@ -62,6 +62,6 @@ git commit --message="\
 Prepare for next development iteration
 "
 
-hub pull-request --push --base develop --message="\
-Develop $RELEASE_VERSION
+hub pull-request --push --base=develop --message="\
+Develop $NEXT_VERSION
 "
