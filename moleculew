@@ -144,7 +144,7 @@ docker_present() {
     banner 'Installing Docker'
     sh <(curl --fail --silent --show-error --location https://get.docker.com)
     run_as_root usermod --append --groups docker "$USER"
-    banner "$USER has been added to the 'docker' group. Logout and log back in for changes to take effect."
+    banner "User '$USER' has been added to the 'docker' group. Logout/restart and log back in for changes to take effect."
     exit 0
 }
 
