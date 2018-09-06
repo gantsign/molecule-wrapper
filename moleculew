@@ -169,15 +169,17 @@ python_present() {
             exit 1
         fi
 
-        export PYENV_VERSION="$PYTHON_VERSION"
-        build_dependencies_present
         pyenv_present
 
+        export PYENV_VERSION="$PYTHON_VERSION"
         if [[ ! -d "$HOME/.pyenv/versions/$PYTHON_VERSION" ]]; then
+            build_dependencies_present
+
             banner "Making Python version $PYTHON_VERSION available using pyenv"
             pyenv install "$PYTHON_VERSION"
             echo ''
         fi
+        eval "$(pyenv init -)"
         PYTHON_EXE="$(pyenv which python)"
     fi
 }
@@ -480,6 +482,8 @@ fi
 MOLECULE_WRAPPER_ENV="$HOME/.moleculew/molecule/$MOLECULE_VERSION/ansible/$ANSIBLE_VERSION/python/$PYTHON_VERSION/docker/$DOCKER_LIB_VERSION"
 
 if [ ! -d "$MOLECULE_WRAPPER_ENV" ]; then
+
+    build_dependencies_present
 
     docker_present
 
