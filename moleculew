@@ -336,6 +336,33 @@ wrapper_upgrade_versions() {
     wrapper_freeze
 }
 
+wrapper_help() {
+    # shellcheck disable=SC2086
+    molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+
+    if [[ "$MOLECULE_CMD" == '' ]]; then
+        echo "
+Molecule Wrapper
+
+Additional options:
+  --ansible VERSION          Use the specified version of Ansible
+  --docker-lib VERSION       Use the specified version of the Python Docker library
+  --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
+  --use-system-dependencies  Use system dependencies
+
+Additional commands:
+  wrapper-clean             Removes all the wrapper virtual environments
+  wrapper-freeze            Freezes the dependency versions being used
+  wrapper-unfreeze          Un-freezes the dependency versions
+  wrapper-update            Updates the Molecule Wrapper to the latest version
+  wrapper-upgrade-versions  Upgrades any frozen dependency versions
+  wrapper-version           Displays the current version of Molecule Wrapper
+"
+    fi
+    exit
+}
+
 PYTHON_VERSION=''
 ANSIBLE_VERSION=''
 DOCKER_LIB_VERSION=''
@@ -344,8 +371,11 @@ USE_SYSTEM_DEPENDENCIES=false
 FREEZE_VERSIONS=false
 UPGRADE_VERSIONS=false
 PRINT_VERSIONS=false
+DISPLAY_HELP=false
 
-POSITIONAL=()
+PRE_ARGS=()
+MOLECULE_CMD=''
+POST_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -419,8 +449,24 @@ while [[ $# -gt 0 ]]; do
             USE_SYSTEM_DEPENDENCIES=true
             shift
         ;;
+        --help)
+            DISPLAY_HELP=true
+            shift
+        ;;
+        check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
+            if [[ "$MOLECULE_CMD" == '' ]]; then
+                MOLECULE_CMD="$1"
+            else
+                POST_ARGS+=("$1")
+            fi
+            shift
+        ;;
         *)
-            POSITIONAL+=("$1")
+            if [[ "$MOLECULE_CMD" == '' ]]; then
+                PRE_ARGS+=("$1")
+            else
+                POST_ARGS+=("$1")
+            fi
             shift
         ;;
     esac
@@ -507,4 +553,9 @@ else
     source "$MOLECULE_WRAPPER_ENV/bin/activate"
 fi
 
-exec molecule "$@"
+if [[ $DISPLAY_HELP == true ]]; then
+    wrapper_help
+fi
+
+# shellcheck disable=SC2086
+exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
