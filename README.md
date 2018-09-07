@@ -193,7 +193,7 @@ e.g.
 
 ### wrapper-version
 
-Displays the current version of the Wrapper Script.
+Displays the current version of the wrapper script.
 
 e.g.
 
