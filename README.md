@@ -66,9 +66,12 @@ Additional options:
   --use-system-dependencies  Use system dependencies
 ```
 
-The `VERSION` may be a valid version number, or `default` to use the frozen
-version (if set) or otherwise use the latest version (i.e. the same effect as
-not specifying the option).
+The `VERSION` may be a valid version number, `latest` to use the latest
+available version, or `default` to use the frozen version (if set) or otherwise
+use the latest version (i.e. the same effect as not specifying the option).
+
+For the Python `VERSION` the values `latest` or `latest2` will be the latest
+version of Python 2.x use `latest3` for the latest version of Python 3.x.
 
 e.g.
 
@@ -136,9 +139,12 @@ Options:
   --use-system-dependencies  Use the system version of Python
 ```
 
-The `VERSION` may be a valid version number, or `default` to use the frozen
-version (if set) or otherwise display the latest version (i.e. the same effect
-as not specifying the option).
+The `VERSION` may be a valid version number, `latest` to use the latest
+available version, or `default` to use the frozen version (if set) or otherwise
+display the latest version (i.e. the same effect as not specifying the option).
+
+For the Python `VERSION` the values `latest` or `latest2` will be the latest
+version of Python 2.x use `latest3` for the latest version of Python 3.x.
 
 e.g.
 
@@ -160,14 +166,25 @@ Options:
   --use-system-dependencies  Use the system version of Python
 ```
 
-The `VERSION` may be a valid version number, or `default` to use the frozen
-version (if set) or otherwise freeze at the current latest version (i.e. the
-same effect as not specifying the option).
+The `VERSION` may be a valid version number, `latest` to freeze to the latest
+available version, or `default` to keep the frozen version (if set) or otherwise
+freeze at the current latest version (i.e. the same effect as not specifying
+the option).
+
+For the Python `VERSION` the values `latest` or `latest2` will freeze to the
+current latest version of Python 2.x use `latest3` to freeze to the current
+latest version of Python 3.x.
 
 e.g.
 
 ```bash
 ./moleculew wrapper-freeze
+```
+
+To upgrade one (or more) of the versions specify the options as follows:
+
+```bash
+./moleculew --ansible latest --molecule 2.16.0 wrapper-freeze
 ```
 
 ### wrapper-unfreeze
