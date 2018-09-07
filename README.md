@@ -72,7 +72,6 @@ e.g.
 ./moleculew --python 3.6.6 test
 ```
 
-
 ### Freezing versions
 
 You can freeze the dependency versions by running the following command:
