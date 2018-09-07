@@ -66,6 +66,10 @@ Additional options:
   --use-system-dependencies  Use system dependencies
 ```
 
+The `VERSION` may be a valid version number, or `default` to use the frozen
+version (if set) or otherwise use the latest version (i.e. the same effect as
+not specifying the option).
+
 e.g.
 
 ```
@@ -132,6 +136,10 @@ Options:
   --use-system-dependencies  Use the system version of Python
 ```
 
+The `VERSION` may be a valid version number, or `default` to use the frozen
+version (if set) or otherwise display the latest version (i.e. the same effect
+as not specifying the option).
+
 e.g.
 
 ```bash
@@ -151,6 +159,10 @@ Options:
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 ```
+
+The `VERSION` may be a valid version number, or `default` to use the frozen
+version (if set) or otherwise freeze at the current latest version (i.e. the
+same effect as not specifying the option).
 
 e.g.
 

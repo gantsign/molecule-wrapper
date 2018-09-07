@@ -482,7 +482,7 @@ if [[ $USE_SYSTEM_DEPENDENCIES == true ]]; then
         exit 1
     fi
     PYTHON_VERSION=system
-elif [[ $PYTHON_VERSION == '' ]]; then
+elif [[ $PYTHON_VERSION == '' ]] || [[ $PYTHON_VERSION == 'default' ]]; then
     if [[ -f $PYTHON_VERSION_FILE ]]; then
         PYTHON_VERSION=$(<"$PYTHON_VERSION_FILE")
     fi
@@ -491,7 +491,7 @@ elif [[ $PYTHON_VERSION == '' ]]; then
     fi
 fi
 
-if [[ $ANSIBLE_VERSION == '' ]]; then
+if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
     if [[ -f $ANSIBLE_VERSION_FILE ]]; then
         ANSIBLE_VERSION=$(<"$ANSIBLE_VERSION_FILE")
     fi
@@ -500,7 +500,7 @@ if [[ $ANSIBLE_VERSION == '' ]]; then
     fi
 fi
 
-if [[ $DOCKER_LIB_VERSION == '' ]]; then
+if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; then
     if [[ -f $DOCKER_LIB_VERSION_FILE ]]; then
         DOCKER_LIB_VERSION=$(<"$DOCKER_LIB_VERSION_FILE")
     fi
@@ -509,7 +509,7 @@ if [[ $DOCKER_LIB_VERSION == '' ]]; then
     fi
 fi
 
-if [[ $MOLECULE_VERSION == '' ]]; then
+if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
     if [[ -f $MOLECULE_VERSION_FILE ]]; then
         MOLECULE_VERSION=$(<$MOLECULE_VERSION_FILE)
     fi
