@@ -58,10 +58,10 @@ library and Molecule by passing command line arguments:
 
 ```
 Additional options:
-  --python VERSION           Use the specified version of Python
   --ansible VERSION          Use the specified version of Ansible
   --docker-lib VERSION       Use the specified version of the Python Docker library
   --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use system dependencies
 ```
 
@@ -124,10 +124,10 @@ Displays the current dependency versions being used:
 
 ```
 Options:
-  --python VERSION           Use the specified version of Python
   --ansible VERSION          Use the specified version of Ansible
   --docker-lib VERSION       Use the specified version of the Python Docker library
   --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 ```
 
@@ -143,10 +143,10 @@ Freezes the dependency versions being used:
 
 ```
 Options:
-  --python VERSION           Use the specified version of Python
   --ansible VERSION          Use the specified version of Ansible
   --docker-lib VERSION       Use the specified version of the Python Docker library
   --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 ```
 
