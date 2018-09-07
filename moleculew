@@ -101,10 +101,16 @@ pyenv_present() {
     PYENV_INSTALLED=true
 }
 
-query_latest_python_version() {
+query_latest_python_version2() {
     pyenv_present
 
     PYTHON_VERSION="$(~/.pyenv/plugins/python-build/bin/python-build --definitions | grep --color=never '^2\.' | grep --invert-match '\-dev$' | tail -1)"
+}
+
+query_latest_python_version3() {
+    pyenv_present
+
+    PYTHON_VERSION="$(~/.pyenv/plugins/python-build/bin/python-build --definitions | grep --color=never '^3\.' | grep --invert-match '\-dev$' | tail -1)"
 }
 
 query_latest_package_version() {
@@ -301,7 +307,7 @@ wrapper_upgrade_versions() {
     CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
     CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
 
-    query_latest_python_version
+    query_latest_python_version2
     query_latest_package_version ANSIBLE_VERSION ansible
     query_latest_package_version DOCKER_LIB_VERSION docker
     query_latest_package_version MOLECULE_VERSION molecule
@@ -487,8 +493,12 @@ elif [[ $PYTHON_VERSION == '' ]] || [[ $PYTHON_VERSION == 'default' ]]; then
         PYTHON_VERSION=$(<"$PYTHON_VERSION_FILE")
     fi
     if [[ $PYTHON_VERSION == '' ]]; then
-        query_latest_python_version
+        query_latest_python_version2
     fi
+elif [[ $PYTHON_VERSION == 'latest' ]] || [[ $PYTHON_VERSION == 'latest2' ]]; then
+    query_latest_python_version2
+elif [[ $PYTHON_VERSION == 'latest3' ]]; then
+    query_latest_python_version3
 fi
 
 if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
@@ -498,6 +508,8 @@ if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
     if [[ $ANSIBLE_VERSION == '' ]]; then
         query_latest_package_version ANSIBLE_VERSION ansible
     fi
+elif [[ $ANSIBLE_VERSION == 'latest' ]]; then
+    query_latest_package_version ANSIBLE_VERSION ansible
 fi
 
 if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; then
@@ -507,6 +519,8 @@ if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; th
     if [[ $DOCKER_LIB_VERSION == '' ]]; then
         query_latest_package_version DOCKER_LIB_VERSION docker
     fi
+elif [[ $DOCKER_LIB_VERSION == 'latest' ]]; then
+    query_latest_package_version DOCKER_LIB_VERSION docker
 fi
 
 if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
@@ -516,6 +530,8 @@ if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
     if [[ $MOLECULE_VERSION == '' ]]; then
         query_latest_package_version MOLECULE_VERSION molecule
     fi
+elif [[ $MOLECULE_VERSION == 'latest' ]]; then
+    query_latest_package_version MOLECULE_VERSION molecule
 fi
 
 if [[ $UPGRADE_VERSIONS == true ]]; then
