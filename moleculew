@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WRAPPER_VERSION=0.9.1
+WRAPPER_VERSION=0.9.2
 
 VERSION_DIR='.moleculew'
 PYTHON_VERSION_FILE="$VERSION_DIR/python_version"
@@ -101,10 +101,16 @@ pyenv_present() {
     PYENV_INSTALLED=true
 }
 
-query_latest_python_version() {
+query_latest_python_version2() {
     pyenv_present
 
     PYTHON_VERSION="$(~/.pyenv/plugins/python-build/bin/python-build --definitions | grep --color=never '^2\.' | grep --invert-match '\-dev$' | tail -1)"
+}
+
+query_latest_python_version3() {
+    pyenv_present
+
+    PYTHON_VERSION="$(~/.pyenv/plugins/python-build/bin/python-build --definitions | grep --color=never '^3\.' | grep --invert-match '\-dev$' | tail -1)"
 }
 
 query_latest_package_version() {
@@ -301,7 +307,7 @@ wrapper_upgrade_versions() {
     CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
     CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
 
-    query_latest_python_version
+    query_latest_python_version2
     query_latest_package_version ANSIBLE_VERSION ansible
     query_latest_package_version DOCKER_LIB_VERSION docker
     query_latest_package_version MOLECULE_VERSION molecule
@@ -336,6 +342,34 @@ wrapper_upgrade_versions() {
     wrapper_freeze
 }
 
+wrapper_help() {
+    # shellcheck disable=SC2086
+    molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+
+    if [[ "$MOLECULE_CMD" == '' ]]; then
+        echo "
+Molecule Wrapper
+
+Additional options:
+  --ansible VERSION          Use the specified version of Ansible
+  --docker-lib VERSION       Use the specified version of the Python Docker
+                             library
+  --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
+  --use-system-dependencies  Use system dependencies
+
+Additional commands:
+  wrapper-clean             Removes all the wrapper virtual environments
+  wrapper-freeze            Freezes the dependency versions being used
+  wrapper-unfreeze          Un-freezes the dependency versions
+  wrapper-update            Updates the Molecule Wrapper to the latest version
+  wrapper-upgrade-versions  Upgrades any frozen dependency versions
+  wrapper-version           Displays the current version of Molecule Wrapper
+"
+    fi
+    exit
+}
+
 PYTHON_VERSION=''
 ANSIBLE_VERSION=''
 DOCKER_LIB_VERSION=''
@@ -344,8 +378,11 @@ USE_SYSTEM_DEPENDENCIES=false
 FREEZE_VERSIONS=false
 UPGRADE_VERSIONS=false
 PRINT_VERSIONS=false
+DISPLAY_HELP=false
 
-POSITIONAL=()
+PRE_ARGS=()
+MOLECULE_CMD=''
+POST_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -419,8 +456,24 @@ while [[ $# -gt 0 ]]; do
             USE_SYSTEM_DEPENDENCIES=true
             shift
         ;;
+        --help)
+            DISPLAY_HELP=true
+            shift
+        ;;
+        check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
+            if [[ "$MOLECULE_CMD" == '' ]]; then
+                MOLECULE_CMD="$1"
+            else
+                POST_ARGS+=("$1")
+            fi
+            shift
+        ;;
         *)
-            POSITIONAL+=("$1")
+            if [[ "$MOLECULE_CMD" == '' ]]; then
+                PRE_ARGS+=("$1")
+            else
+                POST_ARGS+=("$1")
+            fi
             shift
         ;;
     esac
@@ -435,40 +488,50 @@ if [[ $USE_SYSTEM_DEPENDENCIES == true ]]; then
         exit 1
     fi
     PYTHON_VERSION=system
-elif [[ $PYTHON_VERSION == '' ]]; then
+elif [[ $PYTHON_VERSION == '' ]] || [[ $PYTHON_VERSION == 'default' ]]; then
     if [[ -f $PYTHON_VERSION_FILE ]]; then
         PYTHON_VERSION=$(<"$PYTHON_VERSION_FILE")
     fi
     if [[ $PYTHON_VERSION == '' ]]; then
-        query_latest_python_version
+        query_latest_python_version2
     fi
+elif [[ $PYTHON_VERSION == 'latest' ]] || [[ $PYTHON_VERSION == 'latest2' ]]; then
+    query_latest_python_version2
+elif [[ $PYTHON_VERSION == 'latest3' ]]; then
+    query_latest_python_version3
 fi
 
-if [[ $ANSIBLE_VERSION == '' ]]; then
+if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
     if [[ -f $ANSIBLE_VERSION_FILE ]]; then
         ANSIBLE_VERSION=$(<"$ANSIBLE_VERSION_FILE")
     fi
     if [[ $ANSIBLE_VERSION == '' ]]; then
         query_latest_package_version ANSIBLE_VERSION ansible
     fi
+elif [[ $ANSIBLE_VERSION == 'latest' ]]; then
+    query_latest_package_version ANSIBLE_VERSION ansible
 fi
 
-if [[ $DOCKER_LIB_VERSION == '' ]]; then
+if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; then
     if [[ -f $DOCKER_LIB_VERSION_FILE ]]; then
         DOCKER_LIB_VERSION=$(<"$DOCKER_LIB_VERSION_FILE")
     fi
     if [[ $DOCKER_LIB_VERSION == '' ]]; then
         query_latest_package_version DOCKER_LIB_VERSION docker
     fi
+elif [[ $DOCKER_LIB_VERSION == 'latest' ]]; then
+    query_latest_package_version DOCKER_LIB_VERSION docker
 fi
 
-if [[ $MOLECULE_VERSION == '' ]]; then
+if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
     if [[ -f $MOLECULE_VERSION_FILE ]]; then
         MOLECULE_VERSION=$(<$MOLECULE_VERSION_FILE)
     fi
     if [[ $MOLECULE_VERSION == '' ]]; then
         query_latest_package_version MOLECULE_VERSION molecule
     fi
+elif [[ $MOLECULE_VERSION == 'latest' ]]; then
+    query_latest_package_version MOLECULE_VERSION molecule
 fi
 
 if [[ $UPGRADE_VERSIONS == true ]]; then
@@ -507,4 +570,9 @@ else
     source "$MOLECULE_WRAPPER_ENV/bin/activate"
 fi
 
-exec molecule "$@"
+if [[ $DISPLAY_HELP == true ]]; then
+    wrapper_help
+fi
+
+# shellcheck disable=SC2086
+exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
