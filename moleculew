@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WRAPPER_VERSION=0.9.2
+WRAPPER_VERSION=0.9.3
 
 VERSION_DIR='.moleculew'
 PYTHON_VERSION_FILE="$VERSION_DIR/python_version"
@@ -481,6 +481,22 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 set -e
+
+if [[ $USE_SYSTEM_DEPENDENCIES == false ]]; then
+    USE_SYSTEM_DEPENDENCIES="$MOLECULEW_USE_SYSTEM"
+fi
+if [[ $PYTHON_VERSION == '' ]]; then
+    PYTHON_VERSION="$MOLECULEW_PYTHON"
+fi
+if [[ $ANSIBLE_VERSION == '' ]]; then
+    ANSIBLE_VERSION="$MOLECULEW_ANSIBLE"
+fi
+if [[ $DOCKER_LIB_VERSION == '' ]]; then
+    DOCKER_LIB_VERSION="$MOLECULEW_DOCKER_LIB"
+fi
+if [[ $MOLECULE_VERSION == '' ]]; then
+    MOLECULE_VERSION="$MOLECULEW_MOLECULE"
+fi
 
 if [[ $USE_SYSTEM_DEPENDENCIES == true ]]; then
     if [[ $PYTHON_VERSION != '' ]]; then
