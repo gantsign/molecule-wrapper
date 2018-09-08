@@ -54,7 +54,8 @@ By default Molecule Wrapper runs using the latest versions of Python 2.x,
 Ansible, the Python Docker library and Molecule.
 
 You can also specify particular versions of Python, Ansible, the Python Docker
-library and Molecule by passing command line arguments:
+library and Molecule by passing command line arguments or setting environment
+variables:
 
 ```
 Additional options:
@@ -64,14 +65,23 @@ Additional options:
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use system dependencies
+
+Environment variables:
+  MOLECULEW_ANSIBLE     Use the specified version of Ansible
+  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
+  MOLECULEW_MOLECULE    Use the specified version of Molecule
+  MOLECULEW_PYTHON      Use the specified version of Python
+  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
 ```
 
-The `VERSION` may be a valid version number, `latest` to use the latest
+The version may be a valid version number, `latest` to use the latest
 available version, or `default` to use the frozen version (if set) or otherwise
 use the latest version (i.e. the same effect as not specifying the option).
 
 For the Python `VERSION` the values `latest` or `latest2` will be the latest
 version of Python 2.x use `latest3` for the latest version of Python 3.x.
+
+The above command line arguments take preference over environment variables.
 
 e.g.
 
@@ -137,14 +147,23 @@ Options:
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
+
+Environment variables:
+  MOLECULEW_ANSIBLE     Use the specified version of Ansible
+  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
+  MOLECULEW_MOLECULE    Use the specified version of Molecule
+  MOLECULEW_PYTHON      Use the specified version of Python
+  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
 ```
 
-The `VERSION` may be a valid version number, `latest` to use the latest
+The version may be a valid version number, `latest` to use the latest
 available version, or `default` to use the frozen version (if set) or otherwise
 display the latest version (i.e. the same effect as not specifying the option).
 
 For the Python `VERSION` the values `latest` or `latest2` will be the latest
 version of Python 2.x use `latest3` for the latest version of Python 3.x.
+
+The above command line arguments take preference over environment variables.
 
 e.g.
 
@@ -164,9 +183,16 @@ Options:
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
+
+Environment variables:
+  MOLECULEW_ANSIBLE     Use the specified version of Ansible
+  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
+  MOLECULEW_MOLECULE    Use the specified version of Molecule
+  MOLECULEW_PYTHON      Use the specified version of Python
+  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
 ```
 
-The `VERSION` may be a valid version number, `latest` to freeze to the latest
+The version may be a valid version number, `latest` to freeze to the latest
 available version, or `default` to keep the frozen version (if set) or otherwise
 freeze at the current latest version (i.e. the same effect as not specifying
 the option).
@@ -174,6 +200,8 @@ the option).
 For the Python `VERSION` the values `latest` or `latest2` will freeze to the
 current latest version of Python 2.x use `latest3` to freeze to the current
 latest version of Python 3.x.
+
+The above command line arguments take preference over environment variables.
 
 e.g.
 
