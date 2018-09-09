@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 WRAPPER_VERSION=0.9.4-dev
 
 VERSION_DIR='.moleculew'
@@ -16,11 +18,6 @@ DOCKER_LIB_VERSION=''
 MOLECULE_VERSION=''
 PYTHON_VERSION=''
 USE_SYSTEM_DEPENDENCIES=false
-
-DISPLAY_HELP=false
-FREEZE_VERSIONS=false
-PRINT_VERSIONS=false
-UPGRADE_VERSIONS=false
 
 PRE_ARGS=()
 MOLECULE_CMD=''
@@ -274,13 +271,17 @@ print_versions() {
     echo "Molecule: $MOLECULE_VERSION"
 }
 
-wrapper_print_versions() {
+wrapper_versions() {
+    detemine_versions
+
     print_versions
     exit
 }
 
 wrapper_freeze() {
     set -e
+
+    detemine_versions
 
     banner 'Freezing versions'
 
@@ -317,6 +318,8 @@ wrapper_unfreeze() {
 }
 
 wrapper_upgrade_versions() {
+    detemine_versions
+
     banner 'Upgrading versions'
 
     local CURRENT_PYTHON_VERSION="$PYTHON_VERSION"
@@ -360,11 +363,11 @@ wrapper_upgrade_versions() {
 }
 
 wrapper_help() {
-    # shellcheck disable=SC2086
-    molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+    activate_virtualenv
 
-    if [[ "$MOLECULE_CMD" == '' ]]; then
-        echo "
+    molecule --help
+
+    echo "
 Molecule Wrapper
 
 Additional options:
@@ -383,43 +386,15 @@ Additional commands:
   wrapper-upgrade-versions  Upgrades any frozen dependency versions
   wrapper-version           Displays the current version of Molecule Wrapper
 "
-    fi
-    exit
 }
 
 parse_args() {
+    set +e
+
     while [[ $# -gt 0 ]]; do
         key="$1"
 
         case $key in
-            wrapper-clean)
-                wrapper_clean
-            ;;
-            wrapper-update)
-                wrapper_update
-            ;;
-            wrapper-version)
-                wrapper_version
-            ;;
-            wrapper-versions)
-                PRINT_VERSIONS=true
-                shift
-            ;;
-            wrapper-freeze)
-                FREEZE_VERSIONS=true
-                shift
-            ;;
-            wrapper-unfreeze)
-                wrapper_unfreeze
-            ;;
-            wrapper-upgrade-versions)
-                UPGRADE_VERSIONS=true
-                shift
-            ;;
-            wrapper-*)
-                echo "Unsupported command: $1" >&2
-                exit 1
-            ;;
             --python=*)
                 PYTHON_VERSION="${1#*=}"
                 shift
@@ -461,37 +436,31 @@ parse_args() {
                 shift
             ;;
             --help)
-                if [[ "$MOLECULE_CMD" == '' ]]; then
-                    PRE_ARGS+=("$1")
-                else
-                    POST_ARGS+=("$1")
-                fi
-                DISPLAY_HELP=true
-                shift
+                MOLECULE_CMD='wrapper-help'
+                break
+            ;;
+            wrapper-*)
+                MOLECULE_CMD="$1"
+                break
             ;;
             check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
-                if [[ "$MOLECULE_CMD" == '' ]]; then
-                    MOLECULE_CMD="$1"
-                else
-                    POST_ARGS+=("$1")
-                fi
+                MOLECULE_CMD="$1"
                 shift
+                for arg in "$@"; do
+                    POST_ARGS+=("$arg")
+                done
+                break
             ;;
             *)
-                if [[ "$MOLECULE_CMD" == '' ]]; then
-                    PRE_ARGS+=("$1")
-                else
-                    POST_ARGS+=("$1")
-                fi
+                PRE_ARGS+=("$1")
                 shift
             ;;
         esac
     done
+    set -e
 }
 
-set -e
-
-activate_virtualenv() {
+detemine_versions() {
     if [[ $USE_SYSTEM_DEPENDENCIES == false ]]; then
         USE_SYSTEM_DEPENDENCIES="$MOLECULEW_USE_SYSTEM"
     fi
@@ -559,14 +528,10 @@ activate_virtualenv() {
     elif [[ $MOLECULE_VERSION == 'latest' ]]; then
         query_latest_package_version MOLECULE_VERSION molecule
     fi
+}
 
-    if [[ $UPGRADE_VERSIONS == true ]]; then
-        wrapper_upgrade_versions
-    elif [[ $FREEZE_VERSIONS == true ]]; then
-        wrapper_freeze
-    elif [[ $PRINT_VERSIONS == true ]]; then
-        wrapper_print_versions
-    fi
+activate_virtualenv() {
+    detemine_versions
 
     MOLECULE_WRAPPER_ENV="$HOME/.moleculew/molecule/$MOLECULE_VERSION/ansible/$ANSIBLE_VERSION/python/$PYTHON_VERSION/docker/$DOCKER_LIB_VERSION"
 
@@ -599,10 +564,39 @@ activate_virtualenv() {
 
 parse_args "$@"
 
-activate_virtualenv
+case $MOLECULE_CMD in
+    wrapper-clean)
+        wrapper_clean
+    ;;
+    wrapper-freeze)
+        wrapper_freeze
+    ;;
+    wrapper-help)
+        wrapper_help
+    ;;
+    wrapper-unfreeze)
+        wrapper_unfreeze
+    ;;
+    wrapper-update)
+        wrapper_update
+    ;;
+    wrapper-upgrade-versions)
+        wrapper_upgrade_versions
+    ;;
+    wrapper-version)
+        wrapper_version
+    ;;
+    wrapper-versions)
+        wrapper_versions
+    ;;
+    wrapper-*)
+        echo "Unsupported command: $1" >&2
+        exit 1
+    ;;
+    *)
+        activate_virtualenv
 
-if [[ $DISPLAY_HELP == true ]]; then
-    wrapper_help
-fi
-# shellcheck disable=SC2086
-exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+        # shellcheck disable=SC2086
+        exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+    ;;
+esac
