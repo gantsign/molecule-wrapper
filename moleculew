@@ -45,7 +45,7 @@ run_as_root() {
         sudo "$@"
     else
         echo "Error: sudo is not installed" >&2
-        exit 2
+        exit 1
     fi
 }
 
@@ -165,7 +165,7 @@ docker_present() {
     sh <(curl --fail --silent --show-error --location https://get.docker.com)
     run_as_root usermod --append --groups docker "$USER"
     banner "User '$USER' has been added to the 'docker' group. Logout/restart and log back in for changes to take effect."
-    exit 0
+    exit
 }
 
 python_present() {
@@ -231,8 +231,6 @@ install_molecule() {
 }
 
 wrapper_clean() {
-    set -e
-
     local MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
     read -r -p "Delete ${MOLECULE_WRAPPER_HOME} (y/n)? " yn
     case $yn in
@@ -247,8 +245,6 @@ wrapper_clean() {
 }
 
 wrapper_update() {
-    set -e
-
     curl --fail --silent --show-error --location --output moleculew.new \
         'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' \
         && chomd 'u+x' moleculew.new \
@@ -258,8 +254,6 @@ wrapper_update() {
 }
 
 wrapper_version() {
-    set -e
-
     echo "$WRAPPER_VERSION"
     exit
 }
@@ -279,8 +273,6 @@ wrapper_versions() {
 }
 
 wrapper_freeze() {
-    set -e
-
     detemine_versions
 
     banner 'Freezing versions'
@@ -298,8 +290,6 @@ wrapper_freeze() {
 }
 
 wrapper_unfreeze() {
-    set -e
-
     banner 'Un-freezing versions'
 
     if [[ -f "$PYTHON_VERSION_FILE" ]]; then
