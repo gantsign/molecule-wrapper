@@ -219,7 +219,7 @@ install_molecule() {
 wrapper_clean() {
     set -e
 
-    MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
+    local MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
     read -r -p "Delete ${MOLECULE_WRAPPER_HOME} (y/n)? " yn
     case $yn in
         [Yy|YES|yes|Yes])
@@ -302,10 +302,10 @@ wrapper_unfreeze() {
 wrapper_upgrade_versions() {
     banner 'Upgrading versions'
 
-    CURRENT_PYTHON_VERSION="$PYTHON_VERSION"
-    CURRENT_ANSIBLE_VERSION="$ANSIBLE_VERSION"
-    CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
-    CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
+    local CURRENT_PYTHON_VERSION="$PYTHON_VERSION"
+    local CURRENT_ANSIBLE_VERSION="$ANSIBLE_VERSION"
+    local CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
+    local CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
 
     query_latest_python_version2
     query_latest_package_version ANSIBLE_VERSION ansible
