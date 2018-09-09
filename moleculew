@@ -568,6 +568,9 @@ case $MOLECULE_CMD in
     wrapper-help)
         wrapper_help
     ;;
+    wrapper-install)
+        activate_virtualenv
+    ;;
     wrapper-unfreeze)
         wrapper_unfreeze
     ;;
