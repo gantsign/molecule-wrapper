@@ -378,6 +378,80 @@ Additional commands:
 "
 }
 
+query_package_versions() {
+    local package_name="$1"
+    local min_version="$2"
+
+    if [[ ! -x "$(command -v curl)" ]]; then
+        build_dependencies_present > /dev/null
+    fi
+    if [[ ! -x "$(command -v jq)" ]]; then
+        build_dependencies_present > /dev/null
+    fi
+    if [[ ! -x "$(command -v curl)" ]]; then
+        echo 'Error: curl is not installed.' >&2
+        exit 1
+    fi
+    if [[ ! -x "$(command -v jq)" ]]; then
+        echo 'Error: jq is not installed.' >&2
+        exit 1
+    fi
+    if [[ ! -x "$(command -v sort)" ]]; then
+        echo 'Error: sort is not installed.' >&2
+        exit 1
+    fi
+
+    for i in $(curl --fail --silent --show-error \
+                --location "https://pypi.org/pypi/$package_name/json" \
+                | jq --raw-output ".releases | keys | .[], \"$min_version.\"" \
+                | grep --invert-match '[a-zA-Z]' \
+                | sort --version-sort --reverse) ; do
+        if [[ "$i" == "$min_version." ]]; then
+            break
+        fi
+        echo "$i"
+    done
+}
+
+wrapper_options_ansible() {
+    echo 'latest'
+    query_package_versions 'ansible' '2.2'
+}
+
+wrapper_options_docker_lib() {
+    echo 'latest'
+    query_package_versions 'docker' '3.0'
+}
+
+wrapper_options_molecule() {
+    echo 'latest'
+    query_package_versions 'molecule' '2.0'
+}
+
+wrapper_options_python() {
+    if [[ ! -x "$(command -v sort)" ]]; then
+        echo 'Error: sort is not installed.' >&2
+        exit 1
+    fi
+
+    pyenv_present > /dev/null
+
+    local min_version='2.7'
+
+    echo 'latest'
+
+    for i in $( (echo "$min_version." && \
+            ~/.pyenv/plugins/python-build/bin/python-build --definitions) \
+            | grep --color=never '^[0-9]' \
+            | grep --invert-match '\-dev$' \
+            | sort --version-sort --reverse) ; do
+        if [[ "$i" == "$min_version." ]]; then
+            break
+        fi
+        echo "$i"
+    done
+}
+
 wrapper_virtualenv() {
     activate_virtualenv > /dev/null
     echo "$VIRTUAL_ENV"
@@ -575,6 +649,18 @@ case $MOLECULE_CMD in
     ;;
     wrapper-install)
         activate_virtualenv
+    ;;
+    wrapper-options-ansible)
+        wrapper_options_ansible
+    ;;
+    wrapper-options-docker-lib)
+        wrapper_options_docker_lib
+    ;;
+    wrapper-options-molecule)
+        wrapper_options_molecule
+    ;;
+    wrapper-options-python)
+        wrapper_options_python
     ;;
     wrapper-unfreeze)
         wrapper_unfreeze
