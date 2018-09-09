@@ -36,6 +36,14 @@ NEXT_VERSION="${RELEASE_VERSION%.*}.$NEXT_PATCH_VERSION-dev"
 
 set -x
 
+# Update master branch
+git fetch
+git checkout master && git reset --hard origin/master
+
+# Update develop
+git checkout develop
+git pull
+
 git checkout -b "$RELEASE_VERSION-release"
 
 sed --in-place \
