@@ -457,6 +457,11 @@ while [[ $# -gt 0 ]]; do
             shift
         ;;
         --help)
+            if [[ "$MOLECULE_CMD" == '' ]]; then
+                PRE_ARGS+=("$1")
+            else
+                POST_ARGS+=("$1")
+            fi
             DISPLAY_HELP=true
             shift
         ;;
