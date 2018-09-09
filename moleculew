@@ -204,7 +204,7 @@ install_ansible() {
     echo ''
 }
 
-install_DOCKER_LIB() {
+install_docker_lib() {
     banner "Installing Python Docker $DOCKER_LIB_VERSION into virtualenv $VIRTUAL_ENV"
     pip install "docker==$DOCKER_LIB_VERSION"
     echo ''
@@ -583,7 +583,7 @@ if [ ! -d "$MOLECULE_WRAPPER_ENV" ]; then
 
     install_ansible
 
-    install_DOCKER_LIB
+    install_docker_lib
 
     install_molecule
 else
