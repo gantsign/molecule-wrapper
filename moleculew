@@ -431,15 +431,19 @@ parse_args() {
             ;;
             wrapper-*)
                 MOLECULE_CMD="$1"
-                break
+                shift
             ;;
             check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
-                MOLECULE_CMD="$1"
-                shift
-                for arg in "$@"; do
-                    POST_ARGS+=("$arg")
-                done
-                break
+                if [[ "$MOLECULE_CMD" != '' ]]; then
+                    shift
+                else
+                    MOLECULE_CMD="$1"
+                    shift
+                    for arg in "$@"; do
+                        POST_ARGS+=("$arg")
+                    done
+                    break
+                fi
             ;;
             *)
                 PRE_ARGS+=("$1")
