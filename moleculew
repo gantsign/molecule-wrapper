@@ -387,106 +387,107 @@ Additional commands:
     exit
 }
 
-while [[ $# -gt 0 ]]; do
-    key="$1"
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        key="$1"
 
-    case $key in
-        wrapper-clean)
-            wrapper_clean
-        ;;
-        wrapper-update)
-            wrapper_update
-        ;;
-        wrapper-version)
-            wrapper_version
-        ;;
-        wrapper-versions)
-            PRINT_VERSIONS=true
-            shift
-        ;;
-        wrapper-freeze)
-            FREEZE_VERSIONS=true
-            shift
-        ;;
-        wrapper-unfreeze)
-            wrapper_unfreeze
-        ;;
-        wrapper-upgrade-versions)
-            UPGRADE_VERSIONS=true
-            shift
-        ;;
-        wrapper-*)
-            echo "Unsupported command: $1" >&2
-            exit 1
-        ;;
-        --python=*)
-            PYTHON_VERSION="${1#*=}"
-            shift
-        ;;
-        --python)
-            shift
-            PYTHON_VERSION="$1"
-            shift
-        ;;
-        --ansible=*)
-            ANSIBLE_VERSION="${1#*=}"
-            shift
-        ;;
-        --ansible)
-            shift
-            ANSIBLE_VERSION="$1"
-            shift
-        ;;
-        --docker-lib=*)
-            DOCKER_LIB_VERSION="${1#*=}"
-            shift
-        ;;
-        --docker-lib)
-            shift
-            DOCKER_LIB_VERSION="$1"
-            shift
-        ;;
-        --molecule=*)
-            MOLECULE_VERSION="${1#*=}"
-            shift
-        ;;
-        --molecule)
-            shift
-            MOLECULE_VERSION="$1"
-            shift
-        ;;
-        --use-system-dependencies)
-            USE_SYSTEM_DEPENDENCIES=true
-            shift
-        ;;
-        --help)
-            if [[ "$MOLECULE_CMD" == '' ]]; then
-                PRE_ARGS+=("$1")
-            else
-                POST_ARGS+=("$1")
-            fi
-            DISPLAY_HELP=true
-            shift
-        ;;
-        check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
-            if [[ "$MOLECULE_CMD" == '' ]]; then
-                MOLECULE_CMD="$1"
-            else
-                POST_ARGS+=("$1")
-            fi
-            shift
-        ;;
-        *)
-            if [[ "$MOLECULE_CMD" == '' ]]; then
-                PRE_ARGS+=("$1")
-            else
-                POST_ARGS+=("$1")
-            fi
-            shift
-        ;;
-    esac
-done
-set -- "${POSITIONAL[@]}" # restore positional parameters
+        case $key in
+            wrapper-clean)
+                wrapper_clean
+            ;;
+            wrapper-update)
+                wrapper_update
+            ;;
+            wrapper-version)
+                wrapper_version
+            ;;
+            wrapper-versions)
+                PRINT_VERSIONS=true
+                shift
+            ;;
+            wrapper-freeze)
+                FREEZE_VERSIONS=true
+                shift
+            ;;
+            wrapper-unfreeze)
+                wrapper_unfreeze
+            ;;
+            wrapper-upgrade-versions)
+                UPGRADE_VERSIONS=true
+                shift
+            ;;
+            wrapper-*)
+                echo "Unsupported command: $1" >&2
+                exit 1
+            ;;
+            --python=*)
+                PYTHON_VERSION="${1#*=}"
+                shift
+            ;;
+            --python)
+                shift
+                PYTHON_VERSION="$1"
+                shift
+            ;;
+            --ansible=*)
+                ANSIBLE_VERSION="${1#*=}"
+                shift
+            ;;
+            --ansible)
+                shift
+                ANSIBLE_VERSION="$1"
+                shift
+            ;;
+            --docker-lib=*)
+                DOCKER_LIB_VERSION="${1#*=}"
+                shift
+            ;;
+            --docker-lib)
+                shift
+                DOCKER_LIB_VERSION="$1"
+                shift
+            ;;
+            --molecule=*)
+                MOLECULE_VERSION="${1#*=}"
+                shift
+            ;;
+            --molecule)
+                shift
+                MOLECULE_VERSION="$1"
+                shift
+            ;;
+            --use-system-dependencies)
+                USE_SYSTEM_DEPENDENCIES=true
+                shift
+            ;;
+            --help)
+                if [[ "$MOLECULE_CMD" == '' ]]; then
+                    PRE_ARGS+=("$1")
+                else
+                    POST_ARGS+=("$1")
+                fi
+                DISPLAY_HELP=true
+                shift
+            ;;
+            check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
+                if [[ "$MOLECULE_CMD" == '' ]]; then
+                    MOLECULE_CMD="$1"
+                else
+                    POST_ARGS+=("$1")
+                fi
+                shift
+            ;;
+            *)
+                if [[ "$MOLECULE_CMD" == '' ]]; then
+                    PRE_ARGS+=("$1")
+                else
+                    POST_ARGS+=("$1")
+                fi
+                shift
+            ;;
+        esac
+    done
+}
 
 set -e
 
@@ -595,6 +596,8 @@ activate_virtualenv() {
         source "$MOLECULE_WRAPPER_ENV/bin/activate"
     fi
 }
+
+parse_args "$@"
 
 activate_virtualenv
 
