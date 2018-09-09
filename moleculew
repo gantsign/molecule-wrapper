@@ -378,6 +378,11 @@ Additional commands:
 "
 }
 
+wrapper_virtualenv() {
+    activate_virtualenv > /dev/null
+    echo "$VIRTUAL_ENV"
+}
+
 parse_args() {
     set +e
 
@@ -585,6 +590,9 @@ case $MOLECULE_CMD in
     ;;
     wrapper-versions)
         wrapper_versions
+    ;;
+    wrapper-virtualenv)
+        wrapper_virtualenv
     ;;
     wrapper-*)
         echo "Unsupported command: $1" >&2
