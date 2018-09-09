@@ -234,7 +234,7 @@ wrapper_clean() {
     local MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
     read -r -p "Delete ${MOLECULE_WRAPPER_HOME} (y/n)? " yn
     case $yn in
-        [Yy|YES|yes|Yes])
+        [Yy]|YES|yes|Yes)
             rm -rf "$MOLECULE_WRAPPER_HOME";
             exit
         ;;
