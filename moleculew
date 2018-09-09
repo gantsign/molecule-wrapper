@@ -7,6 +7,25 @@ PYTHON_VERSION_FILE="$VERSION_DIR/python_version"
 ANSIBLE_VERSION_FILE="$VERSION_DIR/ansible_version"
 DOCKER_LIB_VERSION_FILE="$VERSION_DIR/docker_lib_version"
 MOLECULE_VERSION_FILE="$VERSION_DIR/molecule_version"
+
+BUILD_DEPENDENCIES_INSTALLLED=false
+PYENV_INSTALLED=false
+
+ANSIBLE_VERSION=''
+DOCKER_LIB_VERSION=''
+MOLECULE_VERSION=''
+PYTHON_VERSION=''
+USE_SYSTEM_DEPENDENCIES=false
+
+DISPLAY_HELP=false
+FREEZE_VERSIONS=false
+PRINT_VERSIONS=false
+UPGRADE_VERSIONS=false
+
+PRE_ARGS=()
+MOLECULE_CMD=''
+POST_ARGS=()
+
 export PATH="$HOME/.pyenv/bin:$HOME/.local/bin:$PATH"
 
 hr() {
@@ -33,7 +52,6 @@ run_as_root() {
     fi
 }
 
-BUILD_DEPENDENCIES_INSTALLLED=false
 build_dependencies_present() {
     if [[ $BUILD_DEPENDENCIES_INSTALLLED == true ]]; then
         return
@@ -80,7 +98,6 @@ build_dependencies_present() {
     BUILD_DEPENDENCIES_INSTALLLED=true
 }
 
-PYENV_INSTALLED=false
 pyenv_present() {
     if [[ $PYENV_INSTALLED == true ]]; then
         return
@@ -369,20 +386,6 @@ Additional commands:
     fi
     exit
 }
-
-PYTHON_VERSION=''
-ANSIBLE_VERSION=''
-DOCKER_LIB_VERSION=''
-MOLECULE_VERSION=''
-USE_SYSTEM_DEPENDENCIES=false
-FREEZE_VERSIONS=false
-UPGRADE_VERSIONS=false
-PRINT_VERSIONS=false
-DISPLAY_HELP=false
-
-PRE_ARGS=()
-MOLECULE_CMD=''
-POST_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     key="$1"
