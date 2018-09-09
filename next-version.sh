@@ -19,6 +19,10 @@ if [[ "$(git status --untracked-files --short)" != '' ]]; then
     exit 1
 fi
 
+# Update develop
+git checkout develop
+git pull
+
 shellcheck moleculew
 shellcheck next-version.sh
 
@@ -40,9 +44,8 @@ set -x
 git fetch
 git checkout master && git reset --hard origin/master
 
-# Update develop
+# Return to develop
 git checkout develop
-git pull
 
 git checkout -b "$RELEASE_VERSION-release"
 
