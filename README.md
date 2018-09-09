@@ -268,6 +268,85 @@ e.g.
 ./moleculew wrapper-update
 ```
 
+### wrapper-install
+
+Installs Molecule (if necessary). You don't need to use this because the other
+commands will run the install if they need to. This is included for CI
+environments where you might want to separate the console output for the install
+from the Molecule output.
+
+```
+Options:
+  --ansible VERSION          Use the specified version of Ansible
+  --docker-lib VERSION       Use the specified version of the Python Docker
+                             library
+  --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
+  --use-system-dependencies  Use the system version of Python
+
+Environment variables:
+  MOLECULEW_ANSIBLE     Use the specified version of Ansible
+  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
+  MOLECULEW_MOLECULE    Use the specified version of Molecule
+  MOLECULEW_PYTHON      Use the specified version of Python
+  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+```
+
+The version may be a valid version number, `latest` to freeze to the latest
+available version, or `default` to keep the frozen version (if set) or otherwise
+freeze at the current latest version (i.e. the same effect as not specifying
+the option).
+
+For the Python `VERSION` the values `latest` or `latest2` will freeze to the
+current latest version of Python 2.x use `latest3` to freeze to the current
+latest version of Python 3.x.
+
+The above command line arguments take preference over environment variables.
+
+e.g.
+
+```bash
+./moleculew wrapper-install
+```
+
+### wrapper-virtualenv
+
+Displays the location of the Virtualenv environment.
+
+```
+Options:
+  --ansible VERSION          Use the specified version of Ansible
+  --docker-lib VERSION       Use the specified version of the Python Docker
+                             library
+  --molecule VERSION         Use the specified version of Molecule
+  --python VERSION           Use the specified version of Python
+  --use-system-dependencies  Use the system version of Python
+
+Environment variables:
+  MOLECULEW_ANSIBLE     Use the specified version of Ansible
+  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
+  MOLECULEW_MOLECULE    Use the specified version of Molecule
+  MOLECULEW_PYTHON      Use the specified version of Python
+  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+```
+
+The version may be a valid version number, `latest` to freeze to the latest
+available version, or `default` to keep the frozen version (if set) or otherwise
+freeze at the current latest version (i.e. the same effect as not specifying
+the option).
+
+For the Python `VERSION` the values `latest` or `latest2` will freeze to the
+current latest version of Python 2.x use `latest3` to freeze to the current
+latest version of Python 3.x.
+
+The above command line arguments take preference over environment variables.
+
+e.g.
+
+```bash
+./moleculew wrapper-virtualenv
+```
+
 ## License
 
 This software is licensed under the terms in the file named "LICENSE" in the

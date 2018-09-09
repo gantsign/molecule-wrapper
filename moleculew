@@ -1,12 +1,28 @@
 #!/usr/bin/env bash
 
-WRAPPER_VERSION=0.9.3
+set -e
+
+WRAPPER_VERSION=0.9.4
 
 VERSION_DIR='.moleculew'
 PYTHON_VERSION_FILE="$VERSION_DIR/python_version"
 ANSIBLE_VERSION_FILE="$VERSION_DIR/ansible_version"
 DOCKER_LIB_VERSION_FILE="$VERSION_DIR/docker_lib_version"
 MOLECULE_VERSION_FILE="$VERSION_DIR/molecule_version"
+
+BUILD_DEPENDENCIES_INSTALLLED=false
+PYENV_INSTALLED=false
+
+ANSIBLE_VERSION=''
+DOCKER_LIB_VERSION=''
+MOLECULE_VERSION=''
+PYTHON_VERSION=''
+USE_SYSTEM_DEPENDENCIES=false
+
+PRE_ARGS=()
+MOLECULE_CMD=''
+POST_ARGS=()
+
 export PATH="$HOME/.pyenv/bin:$HOME/.local/bin:$PATH"
 
 hr() {
@@ -29,11 +45,10 @@ run_as_root() {
         sudo "$@"
     else
         echo "Error: sudo is not installed" >&2
-        exit 2
+        exit 1
     fi
 }
 
-BUILD_DEPENDENCIES_INSTALLLED=false
 build_dependencies_present() {
     if [[ $BUILD_DEPENDENCIES_INSTALLLED == true ]]; then
         return
@@ -80,7 +95,6 @@ build_dependencies_present() {
     BUILD_DEPENDENCIES_INSTALLLED=true
 }
 
-PYENV_INSTALLED=false
 pyenv_present() {
     if [[ $PYENV_INSTALLED == true ]]; then
         return
@@ -151,7 +165,7 @@ docker_present() {
     sh <(curl --fail --silent --show-error --location https://get.docker.com)
     run_as_root usermod --append --groups docker "$USER"
     banner "User '$USER' has been added to the 'docker' group. Logout/restart and log back in for changes to take effect."
-    exit 0
+    exit
 }
 
 python_present() {
@@ -204,7 +218,7 @@ install_ansible() {
     echo ''
 }
 
-install_DOCKER_LIB() {
+install_docker_lib() {
     banner "Installing Python Docker $DOCKER_LIB_VERSION into virtualenv $VIRTUAL_ENV"
     pip install "docker==$DOCKER_LIB_VERSION"
     echo ''
@@ -217,12 +231,10 @@ install_molecule() {
 }
 
 wrapper_clean() {
-    set -e
-
-    MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
+    local MOLECULE_WRAPPER_HOME="$HOME/.moleculew"
     read -r -p "Delete ${MOLECULE_WRAPPER_HOME} (y/n)? " yn
     case $yn in
-        [Yy|YES|yes|Yes])
+        [Yy]|YES|yes|Yes)
             rm -rf "$MOLECULE_WRAPPER_HOME";
             exit
         ;;
@@ -233,8 +245,6 @@ wrapper_clean() {
 }
 
 wrapper_update() {
-    set -e
-
     curl --fail --silent --show-error --location --output moleculew.new \
         'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' \
         && chomd 'u+x' moleculew.new \
@@ -244,8 +254,6 @@ wrapper_update() {
 }
 
 wrapper_version() {
-    set -e
-
     echo "$WRAPPER_VERSION"
     exit
 }
@@ -257,13 +265,15 @@ print_versions() {
     echo "Molecule: $MOLECULE_VERSION"
 }
 
-wrapper_print_versions() {
+wrapper_versions() {
+    detemine_versions
+
     print_versions
     exit
 }
 
 wrapper_freeze() {
-    set -e
+    detemine_versions
 
     banner 'Freezing versions'
 
@@ -280,8 +290,6 @@ wrapper_freeze() {
 }
 
 wrapper_unfreeze() {
-    set -e
-
     banner 'Un-freezing versions'
 
     if [[ -f "$PYTHON_VERSION_FILE" ]]; then
@@ -300,12 +308,14 @@ wrapper_unfreeze() {
 }
 
 wrapper_upgrade_versions() {
+    detemine_versions
+
     banner 'Upgrading versions'
 
-    CURRENT_PYTHON_VERSION="$PYTHON_VERSION"
-    CURRENT_ANSIBLE_VERSION="$ANSIBLE_VERSION"
-    CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
-    CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
+    local CURRENT_PYTHON_VERSION="$PYTHON_VERSION"
+    local CURRENT_ANSIBLE_VERSION="$ANSIBLE_VERSION"
+    local CURRENT_DOCKER_LIB_VERSION="$DOCKER_LIB_VERSION"
+    local CURRENT_MOLECULE_VERSION="$MOLECULE_VERSION"
 
     query_latest_python_version2
     query_latest_package_version ANSIBLE_VERSION ansible
@@ -343,11 +353,11 @@ wrapper_upgrade_versions() {
 }
 
 wrapper_help() {
-    # shellcheck disable=SC2086
-    molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+    activate_virtualenv
 
-    if [[ "$MOLECULE_CMD" == '' ]]; then
-        echo "
+    molecule --help
+
+    echo "
 Molecule Wrapper
 
 Additional options:
@@ -366,229 +376,232 @@ Additional commands:
   wrapper-upgrade-versions  Upgrades any frozen dependency versions
   wrapper-version           Displays the current version of Molecule Wrapper
 "
-    fi
-    exit
 }
 
-PYTHON_VERSION=''
-ANSIBLE_VERSION=''
-DOCKER_LIB_VERSION=''
-MOLECULE_VERSION=''
-USE_SYSTEM_DEPENDENCIES=false
-FREEZE_VERSIONS=false
-UPGRADE_VERSIONS=false
-PRINT_VERSIONS=false
-DISPLAY_HELP=false
+wrapper_virtualenv() {
+    activate_virtualenv > /dev/null
+    echo "$VIRTUAL_ENV"
+}
 
-PRE_ARGS=()
-MOLECULE_CMD=''
-POST_ARGS=()
+parse_args() {
+    set +e
 
-while [[ $# -gt 0 ]]; do
-    key="$1"
+    while [[ $# -gt 0 ]]; do
+        key="$1"
 
-    case $key in
-        wrapper-clean)
-            wrapper_clean
-        ;;
-        wrapper-update)
-            wrapper_update
-        ;;
-        wrapper-version)
-            wrapper_version
-        ;;
-        wrapper-versions)
-            PRINT_VERSIONS=true
-            shift
-        ;;
-        wrapper-freeze)
-            FREEZE_VERSIONS=true
-            shift
-        ;;
-        wrapper-unfreeze)
-            wrapper_unfreeze
-        ;;
-        wrapper-upgrade-versions)
-            UPGRADE_VERSIONS=true
-            shift
-        ;;
-        wrapper-*)
-            echo "Unsupported command: $1" >&2
-            exit 1
-        ;;
-        --python=*)
-            PYTHON_VERSION="${1#*=}"
-            shift
-        ;;
-        --python)
-            shift
-            PYTHON_VERSION="$1"
-            shift
-        ;;
-        --ansible=*)
-            ANSIBLE_VERSION="${1#*=}"
-            shift
-        ;;
-        --ansible)
-            shift
-            ANSIBLE_VERSION="$1"
-            shift
-        ;;
-        --docker-lib=*)
-            DOCKER_LIB_VERSION="${1#*=}"
-            shift
-        ;;
-        --docker-lib)
-            shift
-            DOCKER_LIB_VERSION="$1"
-            shift
-        ;;
-        --molecule=*)
-            MOLECULE_VERSION="${1#*=}"
-            shift
-        ;;
-        --molecule)
-            shift
-            MOLECULE_VERSION="$1"
-            shift
-        ;;
-        --use-system-dependencies)
-            USE_SYSTEM_DEPENDENCIES=true
-            shift
-        ;;
-        --help)
-            DISPLAY_HELP=true
-            shift
-        ;;
-        check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
-            if [[ "$MOLECULE_CMD" == '' ]]; then
+        case $key in
+            --python=*)
+                PYTHON_VERSION="${1#*=}"
+                shift
+            ;;
+            --python)
+                shift
+                PYTHON_VERSION="$1"
+                shift
+            ;;
+            --ansible=*)
+                ANSIBLE_VERSION="${1#*=}"
+                shift
+            ;;
+            --ansible)
+                shift
+                ANSIBLE_VERSION="$1"
+                shift
+            ;;
+            --docker-lib=*)
+                DOCKER_LIB_VERSION="${1#*=}"
+                shift
+            ;;
+            --docker-lib)
+                shift
+                DOCKER_LIB_VERSION="$1"
+                shift
+            ;;
+            --molecule=*)
+                MOLECULE_VERSION="${1#*=}"
+                shift
+            ;;
+            --molecule)
+                shift
+                MOLECULE_VERSION="$1"
+                shift
+            ;;
+            --use-system-dependencies)
+                USE_SYSTEM_DEPENDENCIES=true
+                shift
+            ;;
+            --help)
+                MOLECULE_CMD='wrapper-help'
+                break
+            ;;
+            wrapper-*)
                 MOLECULE_CMD="$1"
-            else
-                POST_ARGS+=("$1")
-            fi
-            shift
-        ;;
-        *)
-            if [[ "$MOLECULE_CMD" == '' ]]; then
+                shift
+            ;;
+            check|converge|create|dependency|destroy|idempotence|init|lint|list|login|matrix|prepare|side-effect|syntax|test|verify)
+                if [[ "$MOLECULE_CMD" != '' ]]; then
+                    shift
+                else
+                    MOLECULE_CMD="$1"
+                    shift
+                    for arg in "$@"; do
+                        POST_ARGS+=("$arg")
+                    done
+                    break
+                fi
+            ;;
+            *)
                 PRE_ARGS+=("$1")
-            else
-                POST_ARGS+=("$1")
-            fi
-            shift
-        ;;
-    esac
-done
-set -- "${POSITIONAL[@]}" # restore positional parameters
+                shift
+            ;;
+        esac
+    done
+    set -e
+}
 
-set -e
-
-if [[ $USE_SYSTEM_DEPENDENCIES == false ]]; then
-    USE_SYSTEM_DEPENDENCIES="$MOLECULEW_USE_SYSTEM"
-fi
-if [[ $PYTHON_VERSION == '' ]]; then
-    PYTHON_VERSION="$MOLECULEW_PYTHON"
-fi
-if [[ $ANSIBLE_VERSION == '' ]]; then
-    ANSIBLE_VERSION="$MOLECULEW_ANSIBLE"
-fi
-if [[ $DOCKER_LIB_VERSION == '' ]]; then
-    DOCKER_LIB_VERSION="$MOLECULEW_DOCKER_LIB"
-fi
-if [[ $MOLECULE_VERSION == '' ]]; then
-    MOLECULE_VERSION="$MOLECULEW_MOLECULE"
-fi
-
-if [[ $USE_SYSTEM_DEPENDENCIES == true ]]; then
-    if [[ $PYTHON_VERSION != '' ]]; then
-        echo "Error: --python and --use-system-dependencies cannot be used together" >&2
-        exit 1
-    fi
-    PYTHON_VERSION=system
-elif [[ $PYTHON_VERSION == '' ]] || [[ $PYTHON_VERSION == 'default' ]]; then
-    if [[ -f $PYTHON_VERSION_FILE ]]; then
-        PYTHON_VERSION=$(<"$PYTHON_VERSION_FILE")
+detemine_versions() {
+    if [[ $USE_SYSTEM_DEPENDENCIES == false ]]; then
+        USE_SYSTEM_DEPENDENCIES="$MOLECULEW_USE_SYSTEM"
     fi
     if [[ $PYTHON_VERSION == '' ]]; then
-        query_latest_python_version2
-    fi
-elif [[ $PYTHON_VERSION == 'latest' ]] || [[ $PYTHON_VERSION == 'latest2' ]]; then
-    query_latest_python_version2
-elif [[ $PYTHON_VERSION == 'latest3' ]]; then
-    query_latest_python_version3
-fi
-
-if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
-    if [[ -f $ANSIBLE_VERSION_FILE ]]; then
-        ANSIBLE_VERSION=$(<"$ANSIBLE_VERSION_FILE")
+        PYTHON_VERSION="$MOLECULEW_PYTHON"
     fi
     if [[ $ANSIBLE_VERSION == '' ]]; then
-        query_latest_package_version ANSIBLE_VERSION ansible
-    fi
-elif [[ $ANSIBLE_VERSION == 'latest' ]]; then
-    query_latest_package_version ANSIBLE_VERSION ansible
-fi
-
-if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; then
-    if [[ -f $DOCKER_LIB_VERSION_FILE ]]; then
-        DOCKER_LIB_VERSION=$(<"$DOCKER_LIB_VERSION_FILE")
+        ANSIBLE_VERSION="$MOLECULEW_ANSIBLE"
     fi
     if [[ $DOCKER_LIB_VERSION == '' ]]; then
-        query_latest_package_version DOCKER_LIB_VERSION docker
-    fi
-elif [[ $DOCKER_LIB_VERSION == 'latest' ]]; then
-    query_latest_package_version DOCKER_LIB_VERSION docker
-fi
-
-if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
-    if [[ -f $MOLECULE_VERSION_FILE ]]; then
-        MOLECULE_VERSION=$(<$MOLECULE_VERSION_FILE)
+        DOCKER_LIB_VERSION="$MOLECULEW_DOCKER_LIB"
     fi
     if [[ $MOLECULE_VERSION == '' ]]; then
+        MOLECULE_VERSION="$MOLECULEW_MOLECULE"
+    fi
+
+    if [[ $USE_SYSTEM_DEPENDENCIES == true ]]; then
+        if [[ $PYTHON_VERSION != '' ]]; then
+            echo "Error: --python and --use-system-dependencies cannot be used together" >&2
+            exit 1
+        fi
+        PYTHON_VERSION=system
+    elif [[ $PYTHON_VERSION == '' ]] || [[ $PYTHON_VERSION == 'default' ]]; then
+        if [[ -f $PYTHON_VERSION_FILE ]]; then
+            PYTHON_VERSION=$(<"$PYTHON_VERSION_FILE")
+        fi
+        if [[ $PYTHON_VERSION == '' ]]; then
+            query_latest_python_version2
+        fi
+    elif [[ $PYTHON_VERSION == 'latest' ]] || [[ $PYTHON_VERSION == 'latest2' ]]; then
+        query_latest_python_version2
+    elif [[ $PYTHON_VERSION == 'latest3' ]]; then
+        query_latest_python_version3
+    fi
+
+    if [[ $ANSIBLE_VERSION == '' ]] || [[ $ANSIBLE_VERSION == 'default' ]]; then
+        if [[ -f $ANSIBLE_VERSION_FILE ]]; then
+            ANSIBLE_VERSION=$(<"$ANSIBLE_VERSION_FILE")
+        fi
+        if [[ $ANSIBLE_VERSION == '' ]]; then
+            query_latest_package_version ANSIBLE_VERSION ansible
+        fi
+    elif [[ $ANSIBLE_VERSION == 'latest' ]]; then
+        query_latest_package_version ANSIBLE_VERSION ansible
+    fi
+
+    if [[ $DOCKER_LIB_VERSION == '' ]] || [[ $DOCKER_LIB_VERSION == 'default' ]]; then
+        if [[ -f $DOCKER_LIB_VERSION_FILE ]]; then
+            DOCKER_LIB_VERSION=$(<"$DOCKER_LIB_VERSION_FILE")
+        fi
+        if [[ $DOCKER_LIB_VERSION == '' ]]; then
+            query_latest_package_version DOCKER_LIB_VERSION docker
+        fi
+    elif [[ $DOCKER_LIB_VERSION == 'latest' ]]; then
+        query_latest_package_version DOCKER_LIB_VERSION docker
+    fi
+
+    if [[ $MOLECULE_VERSION == '' ]] || [[ $MOLECULE_VERSION == 'default' ]]; then
+        if [[ -f $MOLECULE_VERSION_FILE ]]; then
+            MOLECULE_VERSION=$(<$MOLECULE_VERSION_FILE)
+        fi
+        if [[ $MOLECULE_VERSION == '' ]]; then
+            query_latest_package_version MOLECULE_VERSION molecule
+        fi
+    elif [[ $MOLECULE_VERSION == 'latest' ]]; then
         query_latest_package_version MOLECULE_VERSION molecule
     fi
-elif [[ $MOLECULE_VERSION == 'latest' ]]; then
-    query_latest_package_version MOLECULE_VERSION molecule
-fi
+}
 
-if [[ $UPGRADE_VERSIONS == true ]]; then
-    wrapper_upgrade_versions
-elif [[ $FREEZE_VERSIONS == true ]]; then
-    wrapper_freeze
-elif [[ $PRINT_VERSIONS == true ]]; then
-    wrapper_print_versions
-fi
+activate_virtualenv() {
+    detemine_versions
 
-MOLECULE_WRAPPER_ENV="$HOME/.moleculew/molecule/$MOLECULE_VERSION/ansible/$ANSIBLE_VERSION/python/$PYTHON_VERSION/docker/$DOCKER_LIB_VERSION"
+    MOLECULE_WRAPPER_ENV="$HOME/.moleculew/molecule/$MOLECULE_VERSION/ansible/$ANSIBLE_VERSION/python/$PYTHON_VERSION/docker/$DOCKER_LIB_VERSION"
 
-if [ ! -d "$MOLECULE_WRAPPER_ENV" ]; then
+    if [ ! -d "$MOLECULE_WRAPPER_ENV" ]; then
 
-    build_dependencies_present
+        build_dependencies_present
 
-    docker_present
+        docker_present
 
-    python_present
+        python_present
 
-    virtualenv_presant
+        virtualenv_presant
 
-    banner "Initializing virtualenv $MOLECULE_WRAPPER_ENV"
-    virtualenv "--python=$PYTHON_EXE" "$MOLECULE_WRAPPER_ENV"
-    # shellcheck disable=SC1090
-    source "$MOLECULE_WRAPPER_ENV/bin/activate"
-    echo ''
+        banner "Initializing virtualenv $MOLECULE_WRAPPER_ENV"
+        virtualenv "--python=$PYTHON_EXE" "$MOLECULE_WRAPPER_ENV"
+        # shellcheck disable=SC1090
+        source "$MOLECULE_WRAPPER_ENV/bin/activate"
+        echo ''
 
-    install_ansible
+        install_ansible
 
-    install_DOCKER_LIB
+        install_docker_lib
 
-    install_molecule
-else
-    # shellcheck disable=SC1090
-    source "$MOLECULE_WRAPPER_ENV/bin/activate"
-fi
+        install_molecule
+    else
+        # shellcheck disable=SC1090
+        source "$MOLECULE_WRAPPER_ENV/bin/activate"
+    fi
+}
 
-if [[ $DISPLAY_HELP == true ]]; then
-    wrapper_help
-fi
+parse_args "$@"
 
-# shellcheck disable=SC2086
-exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+case $MOLECULE_CMD in
+    wrapper-clean)
+        wrapper_clean
+    ;;
+    wrapper-freeze)
+        wrapper_freeze
+    ;;
+    wrapper-help)
+        wrapper_help
+    ;;
+    wrapper-install)
+        activate_virtualenv
+    ;;
+    wrapper-unfreeze)
+        wrapper_unfreeze
+    ;;
+    wrapper-update)
+        wrapper_update
+    ;;
+    wrapper-upgrade-versions)
+        wrapper_upgrade_versions
+    ;;
+    wrapper-version)
+        wrapper_version
+    ;;
+    wrapper-versions)
+        wrapper_versions
+    ;;
+    wrapper-virtualenv)
+        wrapper_virtualenv
+    ;;
+    wrapper-*)
+        echo "Unsupported command: $1" >&2
+        exit 1
+    ;;
+    *)
+        activate_virtualenv
+
+        # shellcheck disable=SC2086
+        exec molecule "${PRE_ARGS[@]}" $MOLECULE_CMD "${POST_ARGS[@]}"
+    ;;
+esac
