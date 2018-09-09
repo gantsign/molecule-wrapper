@@ -247,7 +247,7 @@ wrapper_clean() {
 wrapper_update() {
     curl --fail --silent --show-error --location --output moleculew.new \
         'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' \
-        && chomd 'u+x' moleculew.new \
+        && chmod 'u+x' moleculew.new \
         && mv --force moleculew.new moleculew
 
     exit
