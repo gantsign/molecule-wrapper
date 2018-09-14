@@ -452,6 +452,69 @@ wrapper_options_python() {
     done
 }
 
+wrapper_options_scenario() {
+    if [ -f 'moleculew' ]; then
+        activate_virtualenv > /dev/null
+    fi
+    python << EOF
+import os
+import sys
+
+import six
+import yaml
+
+
+molecule_dir = 'molecule'
+if not os.path.isdir(molecule_dir):
+    sys.exit()
+
+scenarios = []
+default = False
+
+for filename in os.listdir(molecule_dir):
+    scenario_dir = os.path.join(molecule_dir, filename)
+    if not os.path.isdir(scenario_dir):
+        continue
+
+    molecule_yaml = os.path.join(scenario_dir, 'molecule.yml')
+    if not os.path.isfile(molecule_yaml):
+        continue
+
+    with open(molecule_yaml, 'r') as stream:
+        try:
+            contents = yaml.load(stream)
+        except yaml.YAMLError as exc:
+            continue
+
+        if not isinstance(contents, dict):
+            continue
+
+        scenario = contents.get('scenario')
+        if scenario is None:
+            continue
+        if not isinstance(scenario, dict):
+            continue
+
+        name = scenario.get('name')
+        if name is None:
+            continue
+        if not isinstance(name, six.string_types):
+            continue
+
+        if name == 'default':
+            default = True
+        else:
+            scenarios.append(name)
+
+scenarios.sort()
+if default:
+    scenarios.append('default')
+
+for scenario in scenarios:
+    print(scenario)
+EOF
+}
+
 wrapper_virtualenv() {
     activate_virtualenv > /dev/null
     echo "$VIRTUAL_ENV"
@@ -661,6 +724,9 @@ case $MOLECULE_CMD in
     ;;
     wrapper-options-python)
         wrapper_options_python
+    ;;
+    wrapper-options-scenario)
+        wrapper_options_scenario
     ;;
     wrapper-unfreeze)
         wrapper_unfreeze
