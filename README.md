@@ -18,6 +18,11 @@ wget 'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/molecul
     && chmod 'u+x' moleculew
 ```
 
+### Tab completion and alias for Zsh
+
+To enable tab-completion support and add an alias so you can run the wrapper
+using `molecule` follow [these instructions](zsh/README.md).
+
 ## Caution
 
 Molecule has a lot of dependencies, some of which you'll need root privileges to
