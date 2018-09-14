@@ -244,7 +244,7 @@ wrapper_clean() {
     esac
 }
 
-wrapper_update() {
+wrapper_upgrade() {
     curl --fail --silent --show-error --location --output moleculew.new \
         'https://raw.githubusercontent.com/gantsign/molecule-wrapper/master/moleculew' \
         && chmod 'u+x' moleculew.new \
@@ -253,7 +253,7 @@ wrapper_update() {
     local NEW_VERSION
     NEW_VERSION="$(./moleculew wrapper-version)"
     if [ "$WRAPPER_VERSION" != "$NEW_VERSION" ]; then
-        echo "Updated from: $WRAPPER_VERSION to $NEW_VERSION"
+        echo "Upgraded wrapper from version $WRAPPER_VERSION to $NEW_VERSION"
     else
         echo "You are already using the latest version"
     fi
@@ -379,7 +379,7 @@ Additional commands:
   wrapper-clean             Removes all the wrapper virtual environments
   wrapper-freeze            Freezes the dependency versions being used
   wrapper-unfreeze          Un-freezes the dependency versions
-  wrapper-update            Updates the Molecule Wrapper to the latest version
+  wrapper-upgrade           Upgrades the Molecule Wrapper to the latest version
   wrapper-upgrade-versions  Upgrades any frozen dependency versions
   wrapper-version           Displays the current version of Molecule Wrapper
 "
@@ -738,8 +738,8 @@ case $MOLECULE_CMD in
     wrapper-unfreeze)
         wrapper_unfreeze
     ;;
-    wrapper-update)
-        wrapper_update
+    wrapper-upgrade)
+        wrapper_upgrade
     ;;
     wrapper-upgrade-versions)
         wrapper_upgrade_versions

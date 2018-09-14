@@ -258,14 +258,14 @@ e.g.
 ./moleculew wrapper-version
 ```
 
-### wrapper-update
+### wrapper-upgrade
 
-Updates the Molecule Wrapper to the latest version.
+Upgrades the Molecule Wrapper to the latest version.
 
 e.g.
 
 ```bash
-./moleculew wrapper-update
+./moleculew wrapper-upgrade
 ```
 
 ### wrapper-install
