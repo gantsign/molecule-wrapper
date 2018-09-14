@@ -250,6 +250,13 @@ wrapper_update() {
         && chmod 'u+x' moleculew.new \
         && mv --force moleculew.new moleculew
 
+    local NEW_VERSION
+    NEW_VERSION="$(./moleculew wrapper-version)"
+    if [ "$WRAPPER_VERSION" != "$NEW_VERSION" ]; then
+        echo "Updated from: $WRAPPER_VERSION to $NEW_VERSION"
+    else
+        echo "You are already using the latest version"
+    fi
     exit
 }
 
