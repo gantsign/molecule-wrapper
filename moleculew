@@ -28,7 +28,7 @@
 
 set -e
 
-WRAPPER_VERSION=0.9.11-dev
+WRAPPER_VERSION=0.9.11
 
 VERSION_DIR='.moleculew'
 PYTHON_VERSION_FILE="$VERSION_DIR/python_version"
