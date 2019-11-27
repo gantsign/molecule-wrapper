@@ -198,10 +198,6 @@ __moleculew_ansible_options() {
     compadd -V version -- $(./moleculew wrapper-options-ansible)
 }
 
-__moleculew_docker_lib_options() {
-    compadd -V version -- $(./moleculew wrapper-options-docker-lib)
-}
-
 __moleculew_molecule_options() {
     compadd -V version -- $(./moleculew wrapper-options-molecule)
 }
@@ -225,7 +221,6 @@ _moleculew() {
 
     wrapper_args=(
         "($I)--ansible[The version of Ansible to use.]:ansible_versions:__moleculew_ansible_options"
-        "($I)--docker-lib[The version of the Python Docker library to use.]:docker_lib_versions:__moleculew_docker_lib_options"
         "($I)--molecule[The version of Molecule to use.]:molecule_versions:__moleculew_molecule_options"
         "($I --use-system-dependencies)--python[The version of Python to use.]:python_versions:__moleculew_python_options"
         "($I --python)--use-system-dependencies[Use system dependencies.]"

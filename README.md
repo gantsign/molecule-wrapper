@@ -37,7 +37,6 @@ the following:
 * [Git](https://git-scm.com)
 * [curl](https://curl.haxx.se)
 * [jq](https://stedolan.github.io/jq/)
-* `which`
 * [pyenv](https://github.com/pyenv/pyenv) (if not already installed)
 * [virtualenv](https://virtualenv.pypa.io/en/stable)
 * [Ansible](https://www.ansible.com) (inside the virtual environment)
@@ -56,24 +55,20 @@ You can run any Molecule command directly using the wrapper e.g.:
 ```
 
 By default Molecule Wrapper runs using the latest versions of Python 2.x,
-Ansible, the Python Docker library and Molecule.
+Ansible and Molecule.
 
-You can also specify particular versions of Python, Ansible, the Python Docker
-library and Molecule by passing command line arguments or setting environment
-variables:
+You can also specify particular versions of Python, Ansible and Molecule by
+passing command line arguments or setting environment variables:
 
 ```
 Additional options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use system dependencies
 
 Environment variables:
   MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE    Use the specified version of Molecule
   MOLECULEW_PYTHON      Use the specified version of Python
   MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
@@ -130,7 +125,6 @@ Required dependencies:
 * [Git](https://git-scm.com)
 * [curl](https://curl.haxx.se)
 * [jq](https://stedolan.github.io/jq/)
-* `which`
 
 The remaining dependencies don't require root privileges and will be installed
 if necessary.
@@ -147,15 +141,12 @@ Displays the current dependency versions being used:
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
   MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE    Use the specified version of Molecule
   MOLECULEW_PYTHON      Use the specified version of Python
   MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
@@ -183,15 +174,12 @@ Freezes the dependency versions being used:
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
   MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE    Use the specified version of Molecule
   MOLECULEW_PYTHON      Use the specified version of Python
   MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
@@ -283,15 +271,12 @@ from the Molecule output.
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
   MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE    Use the specified version of Molecule
   MOLECULEW_PYTHON      Use the specified version of Python
   MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
@@ -321,15 +306,12 @@ Displays the location of the Virtualenv environment.
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
   MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB  Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE    Use the specified version of Molecule
   MOLECULEW_PYTHON      Use the specified version of Python
   MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
