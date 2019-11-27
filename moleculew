@@ -454,7 +454,7 @@ wrapper_options_docker_lib() {
 
 wrapper_options_molecule() {
     echo 'latest'
-    query_package_versions 'molecule' '2.0'
+    query_package_versions 'molecule' '2.20'
 }
 
 wrapper_options_python() {
