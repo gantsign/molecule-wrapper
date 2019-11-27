@@ -99,7 +99,7 @@ build_dependencies_present() {
         run_as_root dnf install \
             zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel \
             openssl-devel xz xz-devel libffi-devel \
-            git which curl jq
+            git curl jq
         echo ''
     elif [[ -x "$(command -v yum)" ]]; then
         banner 'Installing build dependencies'
@@ -107,7 +107,7 @@ build_dependencies_present() {
         run_as_root yum install \
             zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel \
             openssl-devel xz xz-devel libffi-devel \
-            git which curl jq
+            git curl jq
         echo ''
     elif [[ -x "$(command -v zypper)" ]]; then
         banner 'Installing build dependencies'
@@ -115,7 +115,7 @@ build_dependencies_present() {
         run_as_root zypper install \
             zlib-devel bzip2 libbz2-devel readline-devel sqlite3 sqlite3-devel \
             libopenssl-devel xz xz-devel \
-            git which curl jq
+            git curl jq
         echo ''
     fi
     BUILD_DEPENDENCIES_INSTALLLED=true
@@ -204,11 +204,7 @@ python_present() {
             echo 'Error: pip is not installed.' >&2
             exit 1
         fi
-        if [[ ! -x "$(command -v which)" ]]; then
-            echo 'Error: which is not installed.' >&2
-            exit 1
-        fi
-        PYTHON_EXE="$(which python)"
+        PYTHON_EXE="$(command -v python)"
     else
         if [[ ! -x "$(command -v git)" ]]; then
             echo 'Error: git is not installed.' >&2
