@@ -37,7 +37,6 @@ the following:
 * [Git](https://git-scm.com)
 * [curl](https://curl.haxx.se)
 * [jq](https://stedolan.github.io/jq/)
-* `which`
 * [pyenv](https://github.com/pyenv/pyenv) (if not already installed)
 * [virtualenv](https://virtualenv.pypa.io/en/stable)
 * [Ansible](https://www.ansible.com) (inside the virtual environment)
@@ -130,7 +129,6 @@ Required dependencies:
 * [Git](https://git-scm.com)
 * [curl](https://curl.haxx.se)
 * [jq](https://stedolan.github.io/jq/)
-* `which`
 
 The remaining dependencies don't require root privileges and will be installed
 if necessary.
