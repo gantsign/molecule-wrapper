@@ -444,7 +444,7 @@ query_package_versions() {
 
 wrapper_options_ansible() {
     echo 'latest'
-    query_package_versions 'ansible' '2.2'
+    query_package_versions 'ansible' '2.7'
 }
 
 wrapper_options_docker_lib() {
