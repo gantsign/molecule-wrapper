@@ -515,7 +515,7 @@ for filename in os.listdir(molecule_dir):
 
     with open(molecule_yaml, 'r') as stream:
         try:
-            contents = yaml.load(stream)
+            contents = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             continue
 
