@@ -240,6 +240,10 @@ install_ansible() {
 
 install_molecule() {
     banner "Installing Molecule $MOLECULE_VERSION into virtualenv $VIRTUAL_ENV"
+
+    # Workaround https://github.com/ansible-community/molecule/issues/2676
+    pip install 'sh==1.12.14'
+
     pip install "molecule[docker]==$MOLECULE_VERSION"
     echo ''
 }
