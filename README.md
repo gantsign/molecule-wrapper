@@ -54,32 +54,37 @@ You can run any Molecule command directly using the wrapper e.g.:
 ./moleculew test
 ```
 
-By default Molecule Wrapper runs using the latest versions of Python 2.x,
-Ansible and Molecule.
+By default Molecule Wrapper runs using the latest versions of Python,
+Ansible, Molecule, YamlLint, Ansible Lint, Flake8 and Testinfra.
 
-You can also specify particular versions of Python, Ansible and Molecule by
-passing command line arguments or setting environment variables:
+You can also specify particular versions by passing command line arguments or
+setting environment variables:
 
 ```
 Additional options:
   --ansible VERSION          Use the specified version of Ansible
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
+  --yamllint VERSION         Use the specified version of YamlLint
+  --ansible-lint VERSION     Use the specified version of Ansible Lint
+  --flake8 VERSION           Use the specified version of Flake8
+  --testinfra VERSION        Use the specified version of Testinfra
   --use-system-dependencies  Use system dependencies
 
 Environment variables:
-  MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_MOLECULE    Use the specified version of Molecule
-  MOLECULEW_PYTHON      Use the specified version of Python
-  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+  MOLECULEW_ANSIBLE       Use the specified version of Ansible
+  MOLECULEW_MOLECULE      Use the specified version of Molecule
+  MOLECULEW_PYTHON        Use the specified version of Python
+  MOLECULEW_YAMLLINT      Use the specified version of YamlLint
+  MOLECULEW_ANSIBLE_LINT  Use the specified version of Ansible Lint
+  MOLECULEW_FLAKE8        Use the specified version of Flake8
+  MOLECULEW_TESTINFA      Use the specified version of Testinfra
+  MOLECULEW_USE_SYSTEM    Use system dependencies (true/false)
 ```
 
 The version may be a valid version number, `latest` to use the latest
 available version, or `default` to use the frozen version (if set) or otherwise
 use the latest version (i.e. the same effect as not specifying the option).
-
-For the Python `VERSION` the values `latest` or `latest2` will be the latest
-version of Python 2.x use `latest3` for the latest version of Python 3.x.
 
 The above command line arguments take preference over environment variables.
 
@@ -143,21 +148,26 @@ Options:
   --ansible VERSION          Use the specified version of Ansible
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
+  --yamllint VERSION         Use the specified version of YamlLint
+  --ansible-lint VERSION     Use the specified version of Ansible Lint
+  --flake8 VERSION           Use the specified version of Flake8
+  --testinfra VERSION        Use the specified version of Testinfra
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
-  MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_MOLECULE    Use the specified version of Molecule
-  MOLECULEW_PYTHON      Use the specified version of Python
-  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+  MOLECULEW_ANSIBLE       Use the specified version of Ansible
+  MOLECULEW_MOLECULE      Use the specified version of Molecule
+  MOLECULEW_PYTHON        Use the specified version of Python
+  MOLECULEW_YAMLLINT      Use the specified version of YamlLint
+  MOLECULEW_ANSIBLE_LINT  Use the specified version of Ansible Lint
+  MOLECULEW_FLAKE8        Use the specified version of Flake8
+  MOLECULEW_TESTINFA      Use the specified version of Testinfra
+  MOLECULEW_USE_SYSTEM    Use system dependencies (true/false)
 ```
 
 The version may be a valid version number, `latest` to use the latest
 available version, or `default` to use the frozen version (if set) or otherwise
 display the latest version (i.e. the same effect as not specifying the option).
-
-For the Python `VERSION` the values `latest` or `latest2` will be the latest
-version of Python 2.x use `latest3` for the latest version of Python 3.x.
 
 The above command line arguments take preference over environment variables.
 
@@ -176,23 +186,27 @@ Options:
   --ansible VERSION          Use the specified version of Ansible
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
+  --yamllint VERSION         Use the specified version of YamlLint
+  --ansible-lint VERSION     Use the specified version of Ansible Lint
+  --flake8 VERSION           Use the specified version of Flake8
+  --testinfra VERSION        Use the specified version of Testinfra
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
-  MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_MOLECULE    Use the specified version of Molecule
-  MOLECULEW_PYTHON      Use the specified version of Python
-  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+  MOLECULEW_ANSIBLE       Use the specified version of Ansible
+  MOLECULEW_MOLECULE      Use the specified version of Molecule
+  MOLECULEW_PYTHON        Use the specified version of Python
+  MOLECULEW_YAMLLINT      Use the specified version of YamlLint
+  MOLECULEW_ANSIBLE_LINT  Use the specified version of Ansible Lint
+  MOLECULEW_FLAKE8        Use the specified version of Flake8
+  MOLECULEW_TESTINFA      Use the specified version of Testinfra
+  MOLECULEW_USE_SYSTEM    Use system dependencies (true/false)
 ```
 
 The version may be a valid version number, `latest` to freeze to the latest
 available version, or `default` to keep the frozen version (if set) or otherwise
 freeze at the current latest version (i.e. the same effect as not specifying
 the option).
-
-For the Python `VERSION` the values `latest` or `latest2` will freeze to the
-current latest version of Python 2.x use `latest3` to freeze to the current
-latest version of Python 3.x.
 
 The above command line arguments take preference over environment variables.
 
@@ -273,23 +287,27 @@ Options:
   --ansible VERSION          Use the specified version of Ansible
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
+  --yamllint VERSION         Use the specified version of YamlLint
+  --ansible-lint VERSION     Use the specified version of Ansible Lint
+  --flake8 VERSION           Use the specified version of Flake8
+  --testinfra VERSION        Use the specified version of Testinfra
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
-  MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_MOLECULE    Use the specified version of Molecule
-  MOLECULEW_PYTHON      Use the specified version of Python
-  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+  MOLECULEW_ANSIBLE       Use the specified version of Ansible
+  MOLECULEW_MOLECULE      Use the specified version of Molecule
+  MOLECULEW_PYTHON        Use the specified version of Python
+  MOLECULEW_YAMLLINT      Use the specified version of YamlLint
+  MOLECULEW_ANSIBLE_LINT  Use the specified version of Ansible Lint
+  MOLECULEW_FLAKE8        Use the specified version of Flake8
+  MOLECULEW_TESTINFA      Use the specified version of Testinfra
+  MOLECULEW_USE_SYSTEM    Use system dependencies (true/false)
 ```
 
 The version may be a valid version number, `latest` to freeze to the latest
 available version, or `default` to keep the frozen version (if set) or otherwise
 freeze at the current latest version (i.e. the same effect as not specifying
 the option).
-
-For the Python `VERSION` the values `latest` or `latest2` will freeze to the
-current latest version of Python 2.x use `latest3` to freeze to the current
-latest version of Python 3.x.
 
 The above command line arguments take preference over environment variables.
 
@@ -308,23 +326,27 @@ Options:
   --ansible VERSION          Use the specified version of Ansible
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
+  --yamllint VERSION         Use the specified version of YamlLint
+  --ansible-lint VERSION     Use the specified version of Ansible Lint
+  --flake8 VERSION           Use the specified version of Flake8
+  --testinfra VERSION        Use the specified version of Testinfra
   --use-system-dependencies  Use the system version of Python
 
 Environment variables:
-  MOLECULEW_ANSIBLE     Use the specified version of Ansible
-  MOLECULEW_MOLECULE    Use the specified version of Molecule
-  MOLECULEW_PYTHON      Use the specified version of Python
-  MOLECULEW_USE_SYSTEM  Use system dependencies (true/false)
+  MOLECULEW_ANSIBLE       Use the specified version of Ansible
+  MOLECULEW_MOLECULE      Use the specified version of Molecule
+  MOLECULEW_PYTHON        Use the specified version of Python
+  MOLECULEW_YAMLLINT      Use the specified version of YamlLint
+  MOLECULEW_ANSIBLE_LINT  Use the specified version of Ansible Lint
+  MOLECULEW_FLAKE8        Use the specified version of Flake8
+  MOLECULEW_TESTINFA      Use the specified version of Testinfra
+  MOLECULEW_USE_SYSTEM    Use system dependencies (true/false)
 ```
 
 The version may be a valid version number, `latest` to freeze to the latest
 available version, or `default` to keep the frozen version (if set) or otherwise
 freeze at the current latest version (i.e. the same effect as not specifying
 the option).
-
-For the Python `VERSION` the values `latest` or `latest2` will freeze to the
-current latest version of Python 2.x use `latest3` to freeze to the current
-latest version of Python 3.x.
 
 The above command line arguments take preference over environment variables.
 
