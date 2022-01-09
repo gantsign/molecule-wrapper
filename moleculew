@@ -238,6 +238,14 @@ virtualenv_presant() {
     fi
 }
 
+install_rich() {
+    # Workaround breaking changes in rich 11 by installing version 10
+    local RICH_VERSION='10.16.2'
+    banner "Installing Rich $RICH_VERSION into virtualenv $VIRTUAL_ENV"
+    pip install "rich==$RICH_VERSION"
+    echo ''
+}
+
 install_ansible() {
     banner "Installing Ansible $ANSIBLE_VERSION into virtualenv $VIRTUAL_ENV"
     pip install "ansible==$ANSIBLE_VERSION"
@@ -864,6 +872,9 @@ activate_virtualenv() {
         # shellcheck disable=SC1090
         source "$MOLECULE_WRAPPER_ENV/bin/activate"
         echo ''
+
+        # Workaround breaking changes in rich 11 by installing version 10
+        install_rich
 
         install_ansible
 
