@@ -1,0 +1,25 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request: {}
+
+jobs:
+  test:
+    name: Shell lint
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Lint moleculew
+        run: shellcheck moleculew
+
+      - name: Lint next-version.sh
+        run: shellcheck next-version.sh
