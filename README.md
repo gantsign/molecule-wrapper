@@ -1,6 +1,6 @@
 # Molecule Wrapper
 
-[![Build Status](https://travis-ci.com/gantsign/molecule-wrapper.svg?branch=master)](https://travis-ci.com/gantsign/molecule-wrapper)
+[![Lint](https://github.com/gantsign/molecule-wrapper/actions/workflows/ci.yml/badge.svg)](https://github.com/gantsign/molecule-wrapper/actions/workflows/ci.yml)
 
 A wrapper script (in the spirit of the
 [Grade Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html))
