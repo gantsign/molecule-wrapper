@@ -40,7 +40,6 @@ the following:
 * [pyenv](https://github.com/pyenv/pyenv) (if not already installed)
 * [virtualenv](https://virtualenv.pypa.io/en/stable)
 * [Ansible](https://www.ansible.com) (inside the virtual environment)
-* [Python Docker library](https://pypi.org/project/docker/) (inside the virtual environment)
 * [Molecule](https://molecule.readthedocs.io) (inside the virtual environment)
 
 If you don't have root privileges see
@@ -55,8 +54,7 @@ You can run any Molecule command directly using the wrapper e.g.:
 ```
 
 By default Molecule Wrapper runs using the latest versions of Python,
-Ansible, the Python Docker library, Molecule, YamlLint, Ansible Lint,
-Flake8 and Testinfra.
+Ansible, Molecule, YamlLint, Ansible Lint, Flake8 and Testinfra.
 
 You can also specify particular versions by passing command line arguments or
 setting environment variables:
@@ -64,8 +62,6 @@ setting environment variables:
 ```
 Additional options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --yamllint VERSION         Use the specified version of YamlLint
@@ -76,7 +72,6 @@ Additional options:
 
 Environment variables:
   MOLECULEW_ANSIBLE       Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB    Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE      Use the specified version of Molecule
   MOLECULEW_PYTHON        Use the specified version of Python
   MOLECULEW_YAMLLINT      Use the specified version of YamlLint
@@ -150,8 +145,6 @@ Displays the current dependency versions being used:
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --yamllint VERSION         Use the specified version of YamlLint
@@ -162,7 +155,6 @@ Options:
 
 Environment variables:
   MOLECULEW_ANSIBLE       Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB    Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE      Use the specified version of Molecule
   MOLECULEW_PYTHON        Use the specified version of Python
   MOLECULEW_YAMLLINT      Use the specified version of YamlLint
@@ -191,8 +183,6 @@ Freezes the dependency versions being used:
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --yamllint VERSION         Use the specified version of YamlLint
@@ -203,7 +193,6 @@ Options:
 
 Environment variables:
   MOLECULEW_ANSIBLE       Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB    Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE      Use the specified version of Molecule
   MOLECULEW_PYTHON        Use the specified version of Python
   MOLECULEW_YAMLLINT      Use the specified version of YamlLint
@@ -295,8 +284,6 @@ from the Molecule output.
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --yamllint VERSION         Use the specified version of YamlLint
@@ -307,7 +294,6 @@ Options:
 
 Environment variables:
   MOLECULEW_ANSIBLE       Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB    Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE      Use the specified version of Molecule
   MOLECULEW_PYTHON        Use the specified version of Python
   MOLECULEW_YAMLLINT      Use the specified version of YamlLint
@@ -337,8 +323,6 @@ Displays the location of the Virtualenv environment.
 ```
 Options:
   --ansible VERSION          Use the specified version of Ansible
-  --docker-lib VERSION       Use the specified version of the Python Docker
-                             library
   --molecule VERSION         Use the specified version of Molecule
   --python VERSION           Use the specified version of Python
   --yamllint VERSION         Use the specified version of YamlLint
@@ -349,7 +333,6 @@ Options:
 
 Environment variables:
   MOLECULEW_ANSIBLE       Use the specified version of Ansible
-  MOLECULEW_DOCKER_LIB    Use the specified version of the Python Docker library
   MOLECULEW_MOLECULE      Use the specified version of Molecule
   MOLECULEW_PYTHON        Use the specified version of Python
   MOLECULEW_YAMLLINT      Use the specified version of YamlLint
