@@ -554,7 +554,7 @@ wrapper_options_python() {
 
 wrapper_options_yamllint() {
     echo 'latest'
-    query_package_versions 'yamllint' '1.24.2'
+    query_package_versions 'yamllint' '1.26.3'
 }
 
 wrapper_options_ansible_lint() {
