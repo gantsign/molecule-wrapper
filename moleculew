@@ -559,7 +559,7 @@ wrapper_options_yamllint() {
 
 wrapper_options_ansible_lint() {
     echo 'latest'
-    query_package_versions 'ansible_lint' '4.2.0'
+    query_package_versions 'ansible_lint' '5.4.0'
 }
 
 wrapper_options_flake8() {
