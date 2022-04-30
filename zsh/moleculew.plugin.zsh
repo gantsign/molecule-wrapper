@@ -198,10 +198,6 @@ __moleculew_ansible_options() {
     compadd -V version -- $(./moleculew wrapper-options-ansible)
 }
 
-__moleculew_docker_lib_options() {
-    compadd -V version -- $(./moleculew wrapper-options-docker-lib)
-}
-
 __moleculew_molecule_options() {
     compadd -V version -- $(./moleculew wrapper-options-molecule)
 }
@@ -241,7 +237,6 @@ _moleculew() {
 
     wrapper_args=(
         "($I)--ansible[The version of Ansible to use.]:ansible_versions:__moleculew_ansible_options"
-        "($I)--docker-lib[The version of the Python Docker library to use.]:docker_lib_versions:__moleculew_docker_lib_options"
         "($I)--molecule[The version of Molecule to use.]:molecule_versions:__moleculew_molecule_options"
         "($I)--yamllint[The version of YamlLint to use.]:yamllint_versions:__moleculew_yamllint_options"
         "($I)--ansible-lint[The version of Ansible Lint to use.]:ansible_lint_versions:__moleculew_ansible_lint_options"
