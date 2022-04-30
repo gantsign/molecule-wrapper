@@ -564,7 +564,7 @@ wrapper_options_ansible_lint() {
 
 wrapper_options_flake8() {
     echo 'latest'
-    query_package_versions 'flake8' '3.8.3'
+    query_package_versions 'flake8' '4.0.1'
 }
 
 wrapper_options_testinfra() {
